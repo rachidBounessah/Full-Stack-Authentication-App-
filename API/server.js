@@ -14,6 +14,9 @@ connectDB();
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+
+app.use("/", require("./routes/root"));
+
 mongoose.connection.once("open", () => {
   console.log("connect to mongoDb");
   app.listen(PORT, () => {

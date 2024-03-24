@@ -1,13 +1,19 @@
 require("dotenv").config();
-console.log("the valus is", process.env.NODE_ENV);
-const mongoose = require("mongoose");
+
 const express = require("express");
 const app = express();
 const connectDB = require("./config/dbConn");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const corsOptions = require("./config/corsOptions");
+const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 9000;
 
 connectDB();
 
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(express.json());
 mongoose.connection.once("open", () => {
   console.log("connect to mongoDb");
   app.listen(PORT, () => {

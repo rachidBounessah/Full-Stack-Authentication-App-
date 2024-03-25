@@ -8,13 +8,14 @@ const cors = require("cors");
 const corsOptions = require("./config/corsOptions");
 const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 9000;
-
+const path = require("path");
 connectDB();
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
+app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", require("./routes/root"));
 
 mongoose.connection.once("open", () => {

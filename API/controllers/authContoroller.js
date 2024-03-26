@@ -108,7 +108,37 @@ const login = async (req, res) => {
   });
 };
 
+const refresh = (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const refreshToken = cookies.jwt;
+
+  jwt.verify(
+    refreshToken,
+    process.env.REFRECH_TOKEN_SECRET,
+    async (err, decoded) => {
+      if (err) return res.status(403).json({ message: "forbidden" });
+      const foundUser = await User.findById(decoded.UserInfo.id).exec();
+      if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
+      const accessTokent = jwt.sign(
+        {
+          UserInfo: {
+            id: foundUser._id,
+          },
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" }
+      );
+
+      res.json({ accessTokent });
+    }
+  );
+};
+
 module.exports = {
   register,
   login,
+  refresh,
 };

@@ -137,8 +137,20 @@ const refresh = (req, res) => {
   );
 };
 
+const logout = (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.jwt) return res.sendStatus(204);
+  res.clearCookie("jwt", {
+    httpOnly: true, //accessible only by hhtp
+    sameSite: "None", //cross-site cookie
+    secure: true,
+  });
+
+  res.json({ message: " clear cookies" });
+};
 module.exports = {
   register,
   login,
   refresh,
+  logout,
 };
